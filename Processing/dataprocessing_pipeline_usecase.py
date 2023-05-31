@@ -29,7 +29,7 @@ class DataProcessingPipeline:
         """
         self.processors.append(processor)
 
-    def process_data(self) -> t.Dict:
+    def process_data(self) -> t.Dict[str, pd.DataFrame]:
         """
         Process data through the pipeline by applying each processor sequentially.
         """

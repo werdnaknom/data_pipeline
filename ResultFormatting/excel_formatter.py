@@ -5,14 +5,24 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 import xlsxwriter
 
-from formatter import Formatter
+from io import BytesIO
+
+from .formatter import Formatter
 
 
 class XLSXFormatter(Formatter):
 
-    def format(self, input: typing.Dict[str, pd.DataFrame]):
+    def _format(self, output, sheets: typing.Dict[str, pd.DataFrame]):
+        writer = pd.ExcelWriter(output, engine="xlsxwriter")
+        for sheet_name, dataframe in sheets.items():
+            dataframe.to_excel(excel_writer=writer, sheet_name=sheet_name, index=False)
+        writer.close()
+        return output
 
-    def _create_excel_document(self, input: typing.Dict[str, pd.DataFrame]):
+    def _create_excel_document(self, input: typing.Tuple[str, pd.DataFrame]):
+        # TODO:: NOT USED
+        filename = input[0]
+        dataframe = input[1]
         # Create a new workbook
         workbook = xlsxwriter.Workbook(filename)
 
@@ -39,6 +49,7 @@ class XLSXFormatter(Formatter):
         workbook.close()
 
     def apply_sheet_formatting(self, worksheet):
+        # TODO:: NOT USED
         # Apply formatting to the data rows
         cell_format = worksheet.get_default_row()
         cell_format.set_align('left')
@@ -46,32 +57,38 @@ class XLSXFormatter(Formatter):
 
 
 class OpenpyxlFormatter(Formatter):
+    # TODO:: NOT USED
 
     def format(self, input: typing.Dict[str, pd.DataFrame]):
-        def create_excel_document(dataframes, filename):
-            # Create a new workbook
-            workbook = Workbook()
+        # TODO:: NOT USED
+        pass
 
-            # Iterate over the processed dataframes
-            for index, dataframe in enumerate(dataframes):
-                # Create a new sheet in the workbook
-                sheet_name = f"Sheet{index + 1}"
-                sheet = workbook.create_sheet(title=sheet_name)
+    def create_excel_document(dataframes, filename):
+        # TODO:: NOT USED
+        # Create a new workbook
+        workbook = Workbook()
 
-                # Write the dataframe to the sheet
-                for row in dataframe_to_rows(dataframe, index=False, header=True):
-                    sheet.append(row)
+        # Iterate over the processed dataframes
+        for index, dataframe in enumerate(dataframes):
+            # Create a new sheet in the workbook
+            sheet_name = f"Sheet{index + 1}"
+            sheet = workbook.create_sheet(title=sheet_name)
 
-                # Apply formatting to the sheet
-                apply_sheet_formatting(sheet)
+            # Write the dataframe to the sheet
+            for row in dataframe_to_rows(dataframe, index=False, header=True):
+                sheet.append(row)
 
-            # Remove the default sheet created by openpyxl
-            workbook.remove(workbook["Sheet"])
+            # Apply formatting to the sheet
+            apply_sheet_formatting(sheet)
 
-            # Save the workbook as an Excel file
-            workbook.save(filename)
+        # Remove the default sheet created by openpyxl
+        workbook.remove(workbook["Sheet"])
 
-    def apply_sheet_formatting(sheet):
+        # Save the workbook as an Excel file
+        workbook.save(filename)
+
+    def apply_sheet_formatting(self, sheet):
+        # TODO:: NOT USED
         # Apply formatting to the header row
         header_row = sheet[1]
         for cell in header_row:

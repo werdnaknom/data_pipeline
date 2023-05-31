@@ -10,15 +10,15 @@ from Processing.dataprocessor_usecase import DataProcessor, ProcessorResponseFai
 
 class RepositoryProcessor(DataProcessor):
 
+    def __init__(self, url):
+        self.url = url
+
     def _create_repository_api_url(self, route: str) -> str:
         url_fmt = "{host}{url_prefix}/{route}"
         host_url = Config.REPOSITORY_URL
         url_prefix = PostProcessingConfig.repository_dataprocessing_route
         url = url_fmt.format(host=host_url, url_prefix=url_prefix, route=route)
         return url
-
-    def __init__(self, url):
-        self.url = url
 
     def _query_repository(self) -> ProcessorResponseSuccess | ProcessorResponseFailure:
         json_request = {"product": "Clara Peak",
