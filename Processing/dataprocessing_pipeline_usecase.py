@@ -29,7 +29,7 @@ class DataProcessingPipeline:
         """
         self.processors.append(processor)
 
-    def process_data(self) -> t.Dict[str, pd.DataFrame]:
+    def process_data(self, json_request: t.Dict) -> t.Dict[str, pd.DataFrame]:
         """
         Process data through the pipeline by applying each processor sequentially.
         """
@@ -42,7 +42,7 @@ class DataProcessingPipeline:
         for i, processor in enumerate(self.processors):
             if i == 0:  # Handle the first processor separately
                 if isinstance(processor, RepositoryProcessor):
-                    repository_response = processor.execute()
+                    repository_response = processor.execute(json_request=json_request)
                 else:
                     print("The first processor should be a RepositoryProcessor.")
                     return None
@@ -52,6 +52,7 @@ class DataProcessingPipeline:
                     return None
                 else:
                     processing_dataframe = repository_response.dataframe
+                    print(type(processing_dataframe))
                     processed_response = processor.execute(processing_dataframe)
                 sheets[processed_response.title] = processed_response.dataframe
         return sheets

@@ -1,1 +1,1 @@
-from .repository_processor import RepositoryProcessor, SequencingRepositoryProcessor
+from .repository_processor import RepositoryProcessor, SequencingRepositoryProcessor, WaveformRepositoryProcessor

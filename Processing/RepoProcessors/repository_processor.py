@@ -1,4 +1,5 @@
 import json
+import typing
 
 from config import Config
 from Entities.config import PostProcessingConfig
@@ -20,9 +21,7 @@ class RepositoryProcessor(DataProcessor):
         url = url_fmt.format(host=host_url, url_prefix=url_prefix, route=route)
         return url
 
-    def _query_repository(self) -> ProcessorResponseSuccess | ProcessorResponseFailure:
-        json_request = {"product": "Clara Peak",
-                        }
+    def _query_repository(self, json_request: typing.Dict) -> ProcessorResponseSuccess | ProcessorResponseFailure:
         # Set the headers for the request (specify the content type as JSON)
         headers = {"Content-Type": "application/json"}
 
@@ -39,12 +38,19 @@ class RepositoryProcessor(DataProcessor):
             return ProcessorResponseFailure(
                 message=f"Repository returned status code {response.status_code}. Failed to retrieve data from the repository")
 
-    def execute(self) -> ProcessorResponseSuccess | ProcessorResponseFailure:
-        return self._query_repository()
+    def execute(self, json_request: typing.Dict) -> ProcessorResponseSuccess | ProcessorResponseFailure:
+        return self._query_repository(json_request=json_request)
 
 
 class SequencingRepositoryProcessor(RepositoryProcessor):
 
     def __init__(self):
         url = self._create_repository_api_url(route="sequencing_processor")
+        super().__init__(url=url)
+
+
+class WaveformRepositoryProcessor(RepositoryProcessor):
+
+    def __init__(self):
+        url = self._create_repository_api_url(route="waveform_processor")
         super().__init__(url=url)
