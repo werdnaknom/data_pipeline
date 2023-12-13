@@ -31,6 +31,7 @@ class WaveformCombinationProcessor(DataFrameProcessor):
         stats_df = stats_df.reset_index()
 
         # for group, grouped_df in dataframe.groupby(by=["waveforms.testpoint", "runid"]):
+        '''
         wa = WaveformAnalysis()
         for i, row in stats_df.iterrows():
             waveforms = row['waveforms.location']
@@ -38,7 +39,8 @@ class WaveformCombinationProcessor(DataFrameProcessor):
                 wf = wa.read_binary_waveform(wfm_path=Path(wf_loc), compressed=False)
                 downsample_y = wa.min_max_downsample_1d(wf, size=600)
                 plt.plot(downsample_y)
-            plt.show()
+            #plt.show()
             plt.close()
+        '''
 
         return stats_df

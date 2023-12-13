@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
         GunicornApplication(app, options).run()
     elif environment == "DEVELOPMENT":
-        app.run(debug=True)
+        app.run(debug=True, port=5002)
     else:
         print(environment)
 

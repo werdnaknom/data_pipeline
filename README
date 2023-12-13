@@ -1,0 +1,12 @@
+- First
+    -- run_web.py creates the flask website.  The flask routes are stored under WebApp/api/routes.py.   A processing
+    will be triggered by sending a json request to one of these routes.
+- Second
+    -- The routes have DataProcessingPipelines (DPP) usecases from Processing/dataprocessing_pipeline_usecase.py.  Each
+    DPP has a list of processors and formatters that query, process, and format the data.
+- Third
+    -- The DataProcessor (Processing/dataprocess_dataprocessor_usecase.py) have execute functions that process a
+    dataframe or repository request.
+    The DataProcessors are stored under Processing/TestDataProcessors.
+- Fourth
+- Fifth

@@ -3,35 +3,14 @@ import typing as t
 
 import pandas as pd
 
-from Entities.RequestResponse import ResponseFailure, ResponseSuccess
+from Processing.processing_responses import ProcessorResponseFailure, ProcessorResponseSuccess
+from Processing.processing_usecase import TestpointQueryRequestObject
+from Processing.RepoProcessors import TestPointProcessor
 
 logging.basicConfig(format='[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)s] : %(message)s',
                     level=logging.DEBUG)
 
 LOG_LEVEL = logging.DEBUG
-
-
-class ProcessorResponseFailure(ResponseFailure):
-    def __init__(self, message):
-        super(ProcessorResponseFailure, self).__init__(type_=self.PARAMETERS_ERROR, message=message)
-
-    def _format_message(self, msg):
-        if isinstance(msg, Exception):
-            return "{}: {}".format(msg.__class__.__name__, "{}".format(msg))
-        return msg
-
-
-class ProcessorResponseSuccess(ResponseSuccess):
-
-    def __init__(self, dataframe: pd.DataFrame, title: str):
-        super(ProcessorResponseSuccess, self).__init__(value=dataframe)
-        self.type = self.SUCCESS
-        self.value = dataframe
-        self.title = title
-
-    @property
-    def dataframe(self):
-        return self.value
 
 
 class DataProcessor:
@@ -40,6 +19,28 @@ class DataProcessor:
     def log(cls):
         logging_handler = logging.getLogger(cls.__name__)
         return logging_handler
+
+    def _waveform_names(self, dataframe: pd.DataFrame) -> t.List[str]:
+        testpoints = dataframe["waveforms.testpoint"].unique()
+        self.log().debug(f"dataframe unique testpoints: {testpoints}")
+        return testpoints.tolist()
+
+    def _product_name(self, dataframe: pd.DataFrame) -> str:
+        return dataframe["project"].unique()[0]
+
+    def _query_dataframe_testpoints(self, dataframe: pd.DataFrame):
+        test_points = self._waveform_names(dataframe=dataframe)
+        product = self._product_name(dataframe=dataframe)
+        return self._query_testpoints(product=product, testpoint_list=test_points)
+
+    def _query_testpoints(self, product: str, testpoint_list: t.Optional[t.List[str]] = None) -> pd.DataFrame:
+        test_point_request_object = TestpointQueryRequestObject(product=product, testpoint_list=testpoint_list)
+        repo = TestPointProcessor()
+        response = repo.execute(json_request=test_point_request_object.to_dict())
+        if response:
+            return response.dataframe
+        else:
+            return response
 
     def execute(self) -> t.Union[ProcessorResponseSuccess, ProcessorResponseFailure]:
         """

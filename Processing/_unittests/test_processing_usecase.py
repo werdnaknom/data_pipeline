@@ -41,7 +41,7 @@ class TestProcessingUseCaseTestCase(TestCase):
         df = uc.query_runid(runid_request=request)
         testpoints = df["waveforms.testpoint"].unique().tolist()
         testpoint_query_request = TestpointQueryRequestObject(product="Clara Peak",
-                                                              testpoints=testpoints)
+                                                              testpoint_list=testpoints)
         testpoint_requirements_query = uc.query_testpoints(testpoint_request=testpoint_query_request)
         testpoint_requirement_names = [tp_req.testpoint for tp_req in testpoint_requirements_query]
         print(testpoint_requirement_names)

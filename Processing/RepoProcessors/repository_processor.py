@@ -6,10 +6,10 @@ from Entities.config import PostProcessingConfig
 import requests
 import pandas as pd
 
-from Processing.dataprocessor_usecase import DataProcessor, ProcessorResponseFailure, ProcessorResponseSuccess
+from Processing.processing_responses import ProcessorResponseFailure, ProcessorResponseSuccess
 
 
-class RepositoryProcessor(DataProcessor):
+class RepositoryProcessor:
 
     def __init__(self, url):
         self.url = url
@@ -53,4 +53,11 @@ class WaveformRepositoryProcessor(RepositoryProcessor):
 
     def __init__(self):
         url = self._create_repository_api_url(route="waveform_processor")
+        super().__init__(url=url)
+
+
+class TestPointProcessor(RepositoryProcessor):
+
+    def __init__(self):
+        url = self._create_repository_api_url(route="testpoint_definitions_processor")
         super().__init__(url=url)

@@ -61,22 +61,22 @@ class RunidInfoRequestObject(RequestObject):
 @dataclass
 class TestpointQueryRequestObject(RequestObject):
     product: str
-    testpoints: t.Optional[str] = None
+    testpoint_list: t.Optional[t.List[str]] = None
 
     def to_dict(self) -> t.Dict:
         adict = {
             "product": self.product
         }
-        if self.testpoints:
-            adict["testpoints"] = self.testpoints
+        if self.testpoint_list:
+            adict["testpoint_list"] = self.testpoint_list
         return adict
 
     def match_query(self) -> t.Dict:
         adict = {
             "product": self.product,
         }
-        if self.testpoints:
-            adict["testpoint"] = {"$in": self.testpoints}
+        if self.testpoint_list:
+            adict["testpoint"] = {"$in": self.testpoint_list}
         return adict
 
 

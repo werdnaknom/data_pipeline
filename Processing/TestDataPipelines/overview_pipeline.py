@@ -10,8 +10,7 @@ class OverviewDataProcessingPipeline(DataProcessingPipeline):
         super(OverviewDataProcessingPipeline, self).__init__()
         self.processors = [
             WaveformRepositoryProcessor(),
-            WaveformCombinationProcessor()
-
-            # TitleSheetProcessor(),
-            # NoProcessor(),
+            WaveformCombinationProcessor(),
+            TitleSheetProcessor(),
+            NoProcessor(),
         ]
